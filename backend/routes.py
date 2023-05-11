@@ -5,6 +5,7 @@ import io
 import base64
 import cv2 as cv
 from autoage import getFaceBox, age_gender_detector
+from adharcheck import aadhar_extract, Validate
 routes = Blueprint('routes', __name__)
 
 
@@ -53,3 +54,26 @@ def autoage():
             print(label)
             cv.imwrite('./faces/linesDetected.jpg', output)
             return label, 200
+        
+#for automated age estimation
+@routes.route('/aadhar',method=['GET', 'POST'])
+def aadhar():
+    data = request.get_json()
+    if data:
+        time.sleep(1)
+        result = data['data']
+        b = bytes(result, 'utf-8')
+        image = b[b.find(b'/9'):]
+        im = Image.open(io.BytesIO(base64.b64decode(image)))
+        im.save('./aadhar'+'/adhar.jpg')
+        data = aadhar_extract(im)
+        print(data[0])
+        y = (data[0][-4:]) 
+        print(y)
+        print(type(y)) 
+        age = 2022 - int(y)
+        vali = Validate(data[1])
+        print(data)
+        vali = vali + " , age:"+str(age)
+    
+    return (vali) ,200
