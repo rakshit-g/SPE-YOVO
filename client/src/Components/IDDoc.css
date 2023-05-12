@@ -1,0 +1,52 @@
+.iddoc {
+  background-color: #b8c6db;
+  background-image: linear-gradient(315deg, #b8c6db 0%, #f5f7fa 74%);
+}
+
+.id-doc .card-body {
+  padding-top: 7rem;
+  padding-bottom: 5rem;
+}
+
+.id-doc .card-group {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  margin-left: 10vh;
+  margin-right: 10vh;
+}
+
+.id-doc .card-title {
+  font-size: 1.6rem;
+  padding-bottom: 7px;
+  font-weight: bold;
+}
+
+.id-doc .card-text {
+  font-size: 1.2rem;
+  padding-bottom: 10px;
+  font-weight: 500;
+}
+
+.id-doc .card {
+  width: 20vh;
+  height: 50vh;
+  align-items: center;
+  align-self: center;
+  border-color: #e5e5e5;
+}
+
+.id-doc .btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  top: 0;
+  bottom: 0;
+  width: 15rem;
+  font-weight: bold;
+  margin-left: 15rem;
+  margin-right: 15rem;
+}

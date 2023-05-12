@@ -1,0 +1,41 @@
+.Aadhar {
+  display: flex;
+  justify-content: center;
+  height: 940px;
+  /* margin-top: 2rem; */
+  background-color: #b8c6db;
+  background-image: linear-gradient(315deg, #b8c6db 0%, #f5f7fa 74%);
+}
+
+.upload__image-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.upload__image-wrapper button {
+  border-radius: 2px;
+  background-color: #4361ee;
+  color: #d8e0ec;
+  border-color: #4361ee;
+  height: 3em;
+  font-weight: bold;
+}
+
+/* .image-item__btn-wrapper .update-btn {
+  margin: 10px;
+  width: 25vh;
+}
+
+.image-item__btn-wrapper .remove-btn {
+  margin: 10px;
+  width: 25vh;
+} */
+
+.img-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 3rem;
+  width: 30vh;
+}

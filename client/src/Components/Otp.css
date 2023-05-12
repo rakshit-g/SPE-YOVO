@@ -1,0 +1,42 @@
+otp-handler {
+    margin-top: 25rem;
+    /* margin-bottom: 28.5rem; */
+  }
+  
+  .otp-field1 {
+    width: 30rem;
+    height: 3rem;
+    margin-right: 0.5rem;
+    text-align: center;
+  }
+  
+  .otp-field2 {
+    width: 30rem;
+    height: 3rem;
+    margin-right: 0.5rem;
+    text-align: center;
+  }
+  
+  .email-button {
+    width: 10rem;
+    height: 3rem;
+    font-weight: bold;
+    background-color: #4361ee;
+    color: #d8e0ec;
+    border-radius: 2px;
+  }
+  
+  .email-button:hover {
+    width: 10rem;
+    height: 3rem;
+    font-weight: bold;
+    background-color: #4e5161;
+    color: #d8e0ec;
+  }
+  
+  h2 {
+    margin-top: 2rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: red;
+  }

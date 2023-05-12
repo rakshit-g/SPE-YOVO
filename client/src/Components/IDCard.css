@@ -1,0 +1,43 @@
+.id-card .card-group {
+  width: 100vh;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.id-card .card {
+  border-color: white;
+}
+
+.id-card .card-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: medium;
+  font-weight: bolder;
+}
+
+.id-card .list-group {
+  font-size: 0.95rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.id-card .btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.id-card .card-text {
+  font-weight: bold;
+}
+
+.id-card .list-group-item {
+  border-color: white;
+}
