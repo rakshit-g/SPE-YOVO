@@ -26,7 +26,7 @@ function MainModal() {
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <Link to="/cards" className="btn btn-primary">Verify Age</Link>                 
+                    <Link to="/login" className="btn btn-primary">Verify Age</Link>                 
                   </div>
                 </div>
               </div>

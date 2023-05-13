@@ -13,10 +13,12 @@ import Age from "./Components/Age";
 import * as serviceWorker from "./serviceWorker";
 import Credit from "./Components/Credit";
 import Otp from "./Components/Otp";
+import Login from "./Components/Login";
 
 ReactDOM.render(
   <Router>
     <Routes>
+      <Route path="/login" element={<Login/>} />
       <Route path="/age" element={<Age />} />
       <Route path="/" element={<MainModal />} />
       <Route path="/cards" element={<Cards />} />

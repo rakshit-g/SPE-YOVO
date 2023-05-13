@@ -272,57 +272,95 @@ import smtplib
 import math
 import string    
 import random
+from flask_mail import Mail, Message
+from config import GMAIL_USERNAME, GMAIL_PASSWORD
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = GMAIL_USERNAME
+app.config['MAIL_PASSWORD'] = GMAIL_PASSWORD
+mail = Mail(app)
 
 @app.route('/otp', methods = ['GET','POST'])
 def otp():
     data = request.get_json()
-    emailid = data['data'][1:len(data['data'])-1]
-    print((emailid))
-    if(re.fullmatch(regex, emailid)):
-        digits="0123456789"
-        OTP=""
-        for i in range(6):
-            OTP+=digits[math.floor(random.random()*10)]
-        msg= OTP
-        print(msg)
-        ran = ''.join(random.choices(string.ascii_uppercase + string.digits, k = 16))  
-        s = smtplib.SMTP('smtp.gmail.com', 587)
-        s.starttls()
-        s.login("anturakshit83@gmail.com", "dsci@123")
-        
-        s.sendmail('Age Validation OTP',emailid,msg)
-        # dic = {
-        #     otp : msg,
-        #     token : ran
-        # }
-        return msg,200
-    else :
-        return "0"
+    email = data['email']
+    password = data['password']
 
-@app.route('/token', methods = ['GET','POST'])
-def token():
-    data = request.get_json()
-    emailid = data['data'][1:len(data['data'])-1]
-    print((emailid))
-    res = ''.join(random.choices(string.ascii_uppercase +
-                             string.digits, k = 16))
-    s = smtplib.SMTP('smtp.gmail.com', 587)
-    s.starttls()
-    s.login("anturakshit83@gmail.com", "dsci@123")
-   
-    s.sendmail('Your YOVO AGE-TOKEN ',emailid,(res))
-    myclient= pymongo.MongoClient("mongodb+srv://dsci:<dsci123>@cluster0.xbsr3.mongodb.net/user?retryWrites=true&w=majority")
-    mydb= myclient["user"]
-    mycol = mydb['agetokens']
-    record = {
-        # "_id": 1,
-        "emailID": emailid,
-        "token": res
+    # Generate a random 6-digit OTP
+    otp = str(random.randint(100000, 999999))
+
+    # Send the OTP to the email
+    send_otp_email(email, otp)
+
+    response = {
+        'otp': otp,
+        'message': 'OTP sent successfully.',
     }
-    mycol.insert_one(record)
+    return jsonify(response)
 
-    print(res)
-    return res,200
+def send_otp_email(email, otp):
+    msg = Message('OTP Verification', sender='your-email@example.com', recipients=[email])
+    msg.body = f'Your OTP: {otp}'
+    mail.send(msg)
+
+# @app.route('/token', methods = ['GET','POST'])
+# def token():
+#     data = request.get_json()
+#     emailid = data['data'][1:len(data['data'])-1]
+#     print((emailid))
+#     res = ''.join(random.choices(string.ascii_uppercase +
+#                              string.digits, k = 16))
+#     s = smtplib.SMTP('smtp.gmail.com', 587)
+#     s.starttls()
+#     s.login("anturakshit83@gmail.com", "dsci@123")
+   
+#     s.sendmail('Your YOVO AGE-TOKEN ',emailid,(res))
+#     myclient= pymongo.MongoClient("mongodb+srv://dsci:<dsci123>@cluster0.xbsr3.mongodb.net/user?retryWrites=true&w=majority")
+#     mydb= myclient["user"]
+#     mycol = mydb['agetokens']
+#     record = {
+#         # "_id": 1,
+#         "emailID": emailid,
+#         "token": res
+#     }
+#     mycol.insert_one(record)
+
+#     print(res)
+#     return res,200
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        data = request.json  # Assuming the data is sent as JSON
+        
+        # Retrieve the email and password from the request data
+        email = data.get('email')
+        password = data.get('password')
+        
+        # Perform your login validation logic here
+        # Example: Check if email and password are valid
+        
+        if email and password:
+            # Login validation logic goes here
+            # Example: Check if the email and password are correct
+            
+            # If the login is successful, you can return a success message
+            response = {"message": "Login successful"}
+            return jsonify(response), 200
+        else:
+            # If the login fails, you can return an error message
+            response = {"message": "Invalid email or password"}
+            return jsonify(response), 401
+    else:
+        # Handle GET requests if necessary
+        # ...
+        pass
+
+if __name__ == '__main__':
+    app.run()
+
 
 if __name__=="__main__":
     app.run(debug= True)
