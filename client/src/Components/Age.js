@@ -48,15 +48,15 @@ const WebcamCapture = () => {
 
       <h2>{name}</h2>
 
-      {/* if (name === 'Over 18')
-      {
-        <Link to="/" />
-      }
-
-      else
-      {
-        <h2>{name}</h2>
-      } */}
+      {name === ",Above 18" ? (
+        <>
+          <Link to="/idcard">If you want to further register your age token to ease the process next time, click on this to go verify your aadhar OR</Link>
+        <Link to ="/">You have verified your age this one time, go to store cart</Link>
+        </>
+      ) : (
+        <p>Try again</p>
+      )}
+     
     </div>
   );
 };

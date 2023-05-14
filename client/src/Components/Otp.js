@@ -1,15 +1,20 @@
+
 import React, { useState } from "react";
 import axios from "axios";
 import "./Otp.css";
-
+import { useLocation } from "react-router-dom"; // Import useLocation from react-router-dom
+import { Link } from "react-router-dom";
 const Otp = () => {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [otp, setOtp] = useState("");
-  const [userEnteredOtp, setUserEnteredOtp] = useState(""); // Add this line
+  const [userEnteredOtp, setUserEnteredOtp] = useState("");
   const [message, setMessage] = useState("");
   const [isOtpVerified, setIsOtpVerified] = useState(false);
 
+  // const location = useLocation(); // Access the location object
+  // console.log(location)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -20,8 +25,8 @@ const Otp = () => {
       });
 
       const data = response.data;
-      setOtp(data.otp); // assuming the server sends back an "otp" field
-      setMessage(data.message); // assuming the server sends back a "message" field
+      setOtp(data.otp);
+      setMessage(data.message);
     } catch (error) {
       console.error(error);
       setMessage("An error occurred while sending OTP.");
@@ -65,8 +70,8 @@ const Otp = () => {
           <input
             type="text"
             placeholder="OTP"
-            value={userEnteredOtp} // Use userEnteredOtp here
-            onChange={(e) => setUserEnteredOtp(e.target.value)} // Update userEnteredOtp
+            value={userEnteredOtp}
+            onChange={(e) => setUserEnteredOtp(e.target.value)}
           />
           <button
             type="submit"
@@ -78,6 +83,18 @@ const Otp = () => {
         </div>
       )}
       {message && <p className={`message ${isOtpVerified ? "success" : "error"}`}>{message}</p>}
+      {isOtpVerified && (
+        <Link to="/" className="otp-link">
+          You have succesfully verified your age and your details are saved. Click on this to redirect to cart.
+        </Link>
+      )}
+      
+      {/* {location.state && location.state.image && (
+        <div className="image-container">
+          <h3>Uploaded Image</h3>
+          <img src={location.state.image} alt="Uploaded Aadhar Image" />
+        </div>
+      )} */}
     </div>
   );
 };
