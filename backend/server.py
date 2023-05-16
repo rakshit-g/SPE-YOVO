@@ -28,7 +28,7 @@ import pymongo
 # for validating an Email
 regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
-app = Flask(__name__)
+app = Flask(___name___)
 CORS(app)
 
 # AUTOMATED AGE ESTIMATION MODEL
@@ -371,10 +371,9 @@ def verifyage():
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     return response,200
 
-if __name__ == '__main__':
+if __name__ == '_main_':
     app.run()
 
 
-if __name__=="__main__":
+if __name__=="__main_":
     app.run(debug= True)
-
