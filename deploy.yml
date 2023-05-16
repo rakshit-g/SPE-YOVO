@@ -1,0 +1,43 @@
+---
+- hosts: localhost
+  become: yes
+  become_user: jenkins
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        update_cache: no
+        state: present
+
+    - name: Pull Frontend Image
+      docker_image:
+        name: "{{ frontend_image }}"
+        source: pull
+
+    - name: Pull Backend Image
+      docker_image:
+        name: "{{ backend_image }}"
+        source: pull
+
+    - name: Create Docker network bridge
+      docker_network:
+        name: my_bridge
+        driver: bridge
+
+    - name: Run Backend Container
+      docker_container:
+        name: backend
+        image: "{{ backend_image }}"
+        published_ports:
+          - "5000:5000"
+        state: started
+        network_mode: my_bridge
+
+    - name: Run Frontend Container
+      docker_container:
+        name: frontend
+        image: "{{ frontend_image }}"
+        published_ports:
+          - "3000:3000"
+        state: started
+        network_mode: my_bridge

@@ -49,6 +49,11 @@ pipeline {
         }
       }
     }
+    stage('Deploy') {
+      steps {
+        sh 'ansible-playbook -i inventory deploy.yml --extra-vars "@vars.yml" '
+      }
+    }
    }
  }
     
