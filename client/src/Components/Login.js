@@ -7,6 +7,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,10 +19,19 @@ const Login = () => {
       });
 
       const data = response.data;
-      setMessage(data.message); // assuming the server sends back a "message" field
+      setMessage(data.message);
+
+      if (response.status === 200) {
+        // Login successful, show the link
+        setLoggedIn(true);
+      } else {
+        // Login unsuccessful
+        setLoggedIn(false);
+      }
     } catch (error) {
       console.error(error);
       setMessage("An error occurred during login.");
+      setLoggedIn(false);
     }
   };
 
@@ -40,7 +50,7 @@ const Login = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
           <input
-            type="text"
+            type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -51,6 +61,16 @@ const Login = () => {
         </form>
       </div>
       <p className="message">{message}</p>
+      {loggedIn ? (
+        <p>
+          Login successful!{" "}
+          <Link to="/" className="redirect-link">
+            Click here to proceed.
+          </Link>
+        </p>
+      ) : (
+        <p>Login unsuccessful. Please retry.</p>
+      )}
     </div>
   );
 };

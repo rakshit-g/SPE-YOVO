@@ -332,37 +332,26 @@ def send_otp_email(email, otp):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        data = request.json  # Assuming the data is sent as JSON
-        
-        # Retrieve the email and password from the request data
-        email = data.get('email')
-        password = data.get('password')
-        
-        # Perform your login validation logic here
-        # Example: Check if email and password are valid
-        
-        if email and password:
-            # Login validation logic goes here
-            # Example: Check if the email and password are correct
-            
-            # If the login is successful, you can return a success message
-            response = {"message": "Login successful"}
-            return jsonify(response), 200
-        else:
-            # If the login fails, you can return an error message
-            response = {"message": "Invalid email or password"}
-            return jsonify(response), 401
+    myclient= pymongo.MongoClient("mongodb+srv://speyovo:speyovo123@specluster.cdvtofr.mongodb.net/users?retryWrites=true&w=majority")
+    mydb= myclient["users"]
+    mycol = mydb['details']
+    data = request.get_json()
+    email = data["email"]
+    password = data["password"]
+
+    # Check if the email and password match in the collection
+    user = mycol.find_one({"email": email, "password": password})
+    if user:
+        return jsonify({"message": "Login successful."}), 200
     else:
-        # Handle GET requests if necessary
-        # ...
-        pass
+        return jsonify({"message": "Invalid email or password."}), 401
 
 from pymongo import MongoClient
-
+from flask_cors import cross_origin
 @app.route('/verifyage', methods = ['GET','POST'])
+@cross_origin(origins=['https://localhost:3000'])
 def verifyage():
-    myclient= pymongo.MongoClient("mongodb+srv://speyovo:<speyovo123>@specluster.cdvtofr.mongodb.net/?retryWrites=true&w=majority")
+    myclient= pymongo.MongoClient("mongodb+srv://speyovo:speyovo123@specluster.cdvtofr.mongodb.net/users?retryWrites=true&w=majority")
     mydb= myclient["users"]
     mycol = mydb['details']
 
@@ -376,7 +365,11 @@ def verifyage():
     })
 
    
-    return jsonify(message='Email and password stored successfully.')
+    response = jsonify(message='Email and password stored successfully.')
+    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response,200
 
 if __name__ == '__main__':
     app.run()
