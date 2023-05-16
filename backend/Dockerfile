@@ -13,6 +13,9 @@ libtesseract-dev \
 tesseract-ocr-eng \
 tesseract-ocr-script-latn \
 && \
+apt-get clean && \
+rm -rf /var/lib/apt/lists/*
+
 # Install any needed packages specified in requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
