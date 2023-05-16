@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json
+from flask_mail import Mail, Message
 from PIL import Image
 import base64
 import io
@@ -9,12 +10,15 @@ import time
 import cv2 as cv
 import pytesseract
 import re
+import logging
 from PIL import Image
 # pytesseract.pytesseract.tesseract_cmd = 'C:\Program Files\Tesseract-OCR/tesseract.exe'
 import re
 import random
 import pymongo
- 
+from pymongo import MongoClient
+from flask_cors import cross_origin
+
 # Make a regular expression
 # for validating an Email
 regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
@@ -46,6 +50,7 @@ perm = [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 5, 7, 6, 2, 8, 3, 0, 9, 4], [5, 8, 0
 
 
 # Load network
+logging.debug('Loading networks...')
 ageNet = cv.dnn.readNet(ageModel, ageProto)
 genderNet = cv.dnn.readNet(genderModel, genderProto)
 faceNet = cv.dnn.readNet(faceModel, faceProto)
@@ -53,6 +58,8 @@ faceNet = cv.dnn.readNet(faceModel, faceProto)
 padding = 20
 
 def getFaceBox(net, frame, conf_threshold=0.7):
+    logging.debug('Getting face bounding boxes...')
+
     frameOpencvDnn = frame.copy()
     frameHeight = frameOpencvDnn.shape[0]
     frameWidth = frameOpencvDnn.shape[1]
@@ -73,6 +80,8 @@ def getFaceBox(net, frame, conf_threshold=0.7):
     return frameOpencvDnn, bboxes
 
 def age_gender_detector(frame):
+    logging.debug('Detecting age and gender...')
+
     # Read frame
     t = time.time()
     frameFace, bboxes = getFaceBox(faceNet, frame)
@@ -93,6 +102,8 @@ def age_gender_detector(frame):
     return frameFace, label
 
 def aadhar_extract():
+    logging.debug('Extracting Aadhar details...')
+
     img3 = cv.imread('./aadhar/adhar.jpg')   #any picture
 # print(img3.shape)
 
@@ -145,6 +156,8 @@ def aadhar_extract():
     return data
 
 def Validate(aadharNum):
+    logging.debug('Validating Aadhar number...')
+
     try:
         i = len(aadharNum)
         if(i!=12):
@@ -168,6 +181,8 @@ def Validate(aadharNum):
         return 'Invalid Aadhar Number'
 
 def creditcheck(card_number):
+    logging.debug('Performing credit card check...')
+
     def digits_of(n):
         return [int(d) for d in str(n)]
     digits = digits_of(card_number)
@@ -183,7 +198,10 @@ def creditcheck(card_number):
 @app.route('/api', methods = ['GET','POST'])
 def api():
     data = request.get_json()
+    logging.debug('Received API request...')
+
     if data:
+        logging.debug('Data received: %s', data)
         time.sleep(1)
         result = data['data']
         b = bytes(result, 'utf-8')
@@ -246,27 +264,27 @@ def aadhar():
 @app.route('/credit', methods = ['GET','POST'])
 def credit():
     data = request.get_json()
+    logging.debug('Received credit API request...')
     if data:
+        logging.debug('Data received: %s', data)
         y = json.dumps(data)
-        print (len(data['data']))
+        logging.debug('Length of data: %d', len(data['data']))
+
         check = creditcheck(int(data['data'][1:len(data['data'])-1]))
         if(check == 0):
+            logging.debug('Valid credit card')
             return "Valid Credit Card"
         else:
+            logging.debug('Invalid credit card')
             return "Invalid credit card"
        
     else:
+        logging.debug('No data received')
         return "re enter credit card number"
-
-import random
-import smtplib
-import math
-import string    
-import random
-from flask_mail import Mail, Message
+  
 # from config import GMAIL_USERNAME, GMAIL_PASSWORD
-GMAIL_USERNAME = ""
-GMAIL_PASSWORD = ""
+GMAIL_USERNAME = "yovo.ageverify@gmail.com"
+GMAIL_PASSWORD = "yhlbvoqfaeyazagm"
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
@@ -277,75 +295,67 @@ mail = Mail(app)
 
 @app.route('/otp', methods = ['GET','POST'])
 def otp():
+    logging.debug('Received OTP API request...')
     data = request.get_json()
+    logging.debug('Data received: %s', data)
+    
     email = data['email']
     password = data['password']
 
     # Generate a random 6-digit OTP
     otp = str(random.randint(100000, 999999))
+    logging.debug('Generated OTP: %s', otp)
 
     # Send the OTP to the email
     send_otp_email(email, otp)
+    logging.debug('OTP sent to email: %s', email)
 
     response = {
         'otp': otp,
         'message': 'OTP sent successfully.',
     }
+    logging.debug('Sending OTP response: %s', response)
     return jsonify(response)
 
+
 def send_otp_email(email, otp):
-    msg = Message('OTP Verification', sender='your-email@example.com', recipients=[email])
+    logging.debug('Sending OTP email...')
+    msg = Message('OTP Verification', sender='yovo.ageverify@example.com', recipients=[email])
     msg.body = f'Your OTP: {otp}'
     mail.send(msg)
+    return
 
-# @app.route('/token', methods = ['GET','POST'])
-# def token():
-#     data = request.get_json()
-#     emailid = data['data'][1:len(data['data'])-1]
-#     print((emailid))
-#     res = ''.join(random.choices(string.ascii_uppercase +
-#                              string.digits, k = 16))
-#     s = smtplib.SMTP('smtp.gmail.com', 587)
-#     s.starttls()
-#     s.login("anturakshit83@gmail.com", "dsci@123")
-   
-#     s.sendmail('Your YOVO AGE-TOKEN ',emailid,(res))
-#     myclient= pymongo.MongoClient("mongodb+srv://dsci:<dsci123>@cluster0.xbsr3.mongodb.net/user?retryWrites=true&w=majority")
-#     mydb= myclient["user"]
-#     mycol = mydb['agetokens']
-#     record = {
-#         # "_id": 1,
-#         "emailID": emailid,
-#         "token": res
-#     }
-#     mycol.insert_one(record)
 
-#     print(res)
-#     return res,200
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    myclient= pymongo.MongoClient("mongodb+srv://speyovo:speyovo123@specluster.cdvtofr.mongodb.net/users?retryWrites=true&w=majority")
-    mydb= myclient["users"]
+    logging.debug('Received login API request...')
+    myclient = pymongo.MongoClient("mongodb+srv://speyovo:speyovo123@specluster.cdvtofr.mongodb.net/users?retryWrites=true&w=majority")
+    mydb = myclient["users"]
     mycol = mydb['details']
+
     data = request.get_json()
+    logging.debug('Data received: %s', data)
+
     email = data["email"]
     password = data["password"]
 
     # Check if the email and password match in the collection
     user = mycol.find_one({"email": email, "password": password})
     if user:
+        logging.debug('Login successful.')
         return jsonify({"message": "Login successful."}), 200
     else:
+        logging.debug('Invalid email or password.')
         return jsonify({"message": "Invalid email or password."}), 401
 
-from pymongo import MongoClient
-from flask_cors import cross_origin
+
 @app.route('/verifyage', methods = ['GET','POST'])
 @cross_origin(origins=['https://localhost:3000'])
 def verifyage():
-    myclient= pymongo.MongoClient("mongodb+srv://speyovo:speyovo123@specluster.cdvtofr.mongodb.net/users?retryWrites=true&w=majority")
-    mydb= myclient["users"]
+    logging.debug('Received verifyage API request...')
+    myclient = pymongo.MongoClient("mongodb+srv://speyovo:speyovo123@specluster.cdvtofr.mongodb.net/users?retryWrites=true&w=majority")
+    mydb = myclient["users"]
     mycol = mydb['details']
 
     email = request.json['email']
@@ -357,7 +367,7 @@ def verifyage():
         'isVerified': True
     })
 
-   
+    logging.debug('Email and password stored successfully.')
     response = jsonify(message='Email and password stored successfully.')
     response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
@@ -365,6 +375,7 @@ def verifyage():
     return response,200
 
 if __name__ == '__main__':
+    logging.basicConfig(filename='backend.log', level=logging.DEBUG)
     app.run()
 
 
