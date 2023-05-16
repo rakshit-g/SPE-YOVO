@@ -376,6 +376,7 @@ def verifyage():
 
 if __name__ == '__main__':
     logging.basicConfig(filename='backend.log', level=logging.DEBUG)
+    logging = logging.getLogger()
     app.run()
 
 
