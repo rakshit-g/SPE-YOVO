@@ -10,7 +10,7 @@ pipeline {
     stage('Build and Test Frontend') {
       steps {
         dir(path: 'client') {
-          sh 'npm install'
+          sh 'npm install --legacy-peer-deps'
           // sh 'npm run test'
           sh 'npm run build'
         }
