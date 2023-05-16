@@ -358,6 +358,26 @@ def login():
         # ...
         pass
 
+from pymongo import MongoClient
+
+@app.route('/verifyage', methods = ['GET','POST'])
+def verifyage():
+    myclient= pymongo.MongoClient("mongodb+srv://speyovo:<speyovo123>@specluster.cdvtofr.mongodb.net/?retryWrites=true&w=majority")
+    mydb= myclient["users"]
+    mycol = mydb['details']
+
+    email = request.json['email']
+    password = request.json['password']
+
+    mycol.insert_one({
+        'email': email,
+        'password': password,
+        'isVerified': True
+    })
+
+   
+    return jsonify(message='Email and password stored successfully.')
+
 if __name__ == '__main__':
     app.run()
 

@@ -12,6 +12,7 @@ const Otp = () => {
   const [userEnteredOtp, setUserEnteredOtp] = useState("");
   const [message, setMessage] = useState("");
   const [isOtpVerified, setIsOtpVerified] = useState(false);
+  const [isDetailsStored, setIsDetailsStored] = useState(false);
 
   // const location = useLocation(); // Access the location object
   // console.log(location)
@@ -33,10 +34,23 @@ const Otp = () => {
     }
   };
 
-  const handleOtpVerification = () => {
+  const handleOtpVerification = async () => {
     if (otp === userEnteredOtp) {
       setMessage("OTP verification successful.");
       setIsOtpVerified(true);
+
+      try {
+        const response = await axios.post("http://127.0.0.1:5000/verifyotp", {
+          email,
+          password,
+        });
+        if (response.data) {
+          setIsDetailsStored(true);
+        } 
+        console.log("Email and password sent to /verifyotp");
+      } catch (error) {
+        console.error(error);
+      }
     } else {
       setMessage("Invalid OTP. Please try again.");
       setIsOtpVerified(false);
@@ -82,7 +96,7 @@ const Otp = () => {
           </button>
         </div>
       )}
-      {message && <p className={`message ${isOtpVerified ? "success" : "error"}`}>{message}</p>}
+      {message && setIsDetailsStored && <p className={`message ${isOtpVerified ? "success" : "error"}`}>{message}</p>}
       {isOtpVerified && (
         <Link to="/" className="otp-link">
           You have succesfully verified your age and your details are saved. Click on this to redirect to cart.
