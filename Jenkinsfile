@@ -9,7 +9,7 @@ pipeline {
 
     stage('Build and Test Frontend') {
       steps {
-        dir(path: 'sci-calc') {
+        dir(path: 'client') {
           sh 'npm install'
           // sh 'npm run test'
           sh 'npm run build'
@@ -19,7 +19,7 @@ pipeline {
 
     stage('Build and Test Backend') {
       steps {
-        dir(path: 'sci-calc-backend') {
+        dir(path: 'backend') {
           sh 'pwd' 
           sh 'pip3 install -r requirements.txt'
           sh 'python3 app.py &'
