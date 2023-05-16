@@ -1,26 +1,17 @@
-from distutils.log import debug
-import email
-from tkinter import Y
-from attr import validate
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json
 from PIL import Image
 import base64
 import io
-import os
-import shutil
 import numpy as np
 import time
 import cv2 as cv
 import pytesseract
 import re
-import dateutil.parser as dparser
 from PIL import Image
-pytesseract.pytesseract.tesseract_cmd = 'C:\Program Files\Tesseract-OCR/tesseract.exe'
-import os.path
+# pytesseract.pytesseract.tesseract_cmd = 'C:\Program Files\Tesseract-OCR/tesseract.exe'
 import re
-import string
 import random
 import pymongo
  
@@ -273,7 +264,9 @@ import math
 import string    
 import random
 from flask_mail import Mail, Message
-from config import GMAIL_USERNAME, GMAIL_PASSWORD
+# from config import GMAIL_USERNAME, GMAIL_PASSWORD
+GMAIL_USERNAME = ""
+GMAIL_PASSWORD = ""
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
